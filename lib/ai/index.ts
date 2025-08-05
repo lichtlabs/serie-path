@@ -2,7 +2,7 @@ import { createOpenAI, OpenAIProviderSettings } from "@ai-sdk/openai"
 import { createOllama, OllamaProviderSettings } from "ollama-ai-provider"
 
 export const SUPPORTED_PROVIDERS = {
-    "Open AI": {
+    openai: {
         models: [
             "gpt-4.1",
             "gpt-4.1-2025-04-14",
@@ -56,7 +56,7 @@ export const SUPPORTED_PROVIDERS = {
             apiKey: undefined,
         },
     },
-    Ollama: {
+    ollama: {
         models: [
             "athene-v2",
             "athene-v2:72b",
@@ -106,6 +106,8 @@ export const SUPPORTED_PROVIDERS = {
             "gemma2:2b",
             "gemma2:9b",
             "gemma2:27b",
+            "gemma3",
+            "gemma3n",
             "granite3-dense",
             "granite3-dense:2b",
             "granite3-dense:8b",

@@ -1,4 +1,5 @@
 import AIProviderSettings from "@/components/ai-provider-settings"
+import Chat from "@/components/chat"
 import { Button } from "@/components/ui/button"
 
 export default function ComponentPreviewPage() {
@@ -12,6 +13,7 @@ export default function ComponentPreviewPage() {
                     <Button variant="outline">Outline</Button>
                     <Button variant="destructive">Destructive</Button>
                 </div>
+                <Chat />
             </div>
         </div>
     )

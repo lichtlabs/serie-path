@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label"
 import { SUPPORTED_PROVIDERS } from "@/lib/ai"
 import { providerAtom } from "@/lib/atoms"
 
+import ModelPicker from "./model-picker"
 import { Badge } from "./ui/badge"
 import {
     Select,
@@ -41,13 +42,6 @@ export default function AIProviderSettings() {
         }))
     }
 
-    function handleSetModel(model: string) {
-        providerAtomSetValue((prev: any) => ({
-            ...prev,
-            model,
-        }))
-    }
-
     function handleSetConfig(config: any) {
         providerAtomSetValue((prev: any) => ({
             ...prev,
@@ -58,7 +52,7 @@ export default function AIProviderSettings() {
     function handleSave() {
         const defaultConfig = (SUPPORTED_PROVIDERS as any)[
             providerAtomValue?.provider ?? "Ollama"
-        ].config
+        ]?.config
 
         providerAtomSetValue((prev: any) => ({
             ...prev,
@@ -121,24 +115,8 @@ export default function AIProviderSettings() {
                     </div>
                     {providerAtomValue?.provider && (
                         <div className="grid gap-3">
-                            <Label htmlFor="model">Models</Label>
-                            <Select
-                                onValueChange={handleSetModel}
-                                defaultValue={providerAtomValue?.model}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select a model" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {(SUPPORTED_PROVIDERS as any)[
-                                        providerAtomValue?.provider
-                                    ].models.map((model: string) => (
-                                        <SelectItem key={model} value={model}>
-                                            {model}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <Label htmlFor="model">Model</Label>
+                            <ModelPicker />
                         </div>
                     )}
                     {providerAtomValue?.provider &&
@@ -147,7 +125,7 @@ export default function AIProviderSettings() {
                                 {Object.keys(
                                     (SUPPORTED_PROVIDERS as any)[
                                         providerAtomValue.provider
-                                    ].config,
+                                    ]?.config,
                                 ).map((configKey) => (
                                     <Fragment key={configKey}>
                                         <Label htmlFor={configKey}>
@@ -158,7 +136,7 @@ export default function AIProviderSettings() {
                                             defaultValue={
                                                 (SUPPORTED_PROVIDERS as any)[
                                                     providerAtomValue.provider
-                                                ].config[configKey]
+                                                ]?.config[configKey]
                                             }
                                             placeholder={`Enter your ${configKey}`}
                                             onChange={(e) =>
