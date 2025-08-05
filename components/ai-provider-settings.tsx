@@ -1,7 +1,6 @@
 "use client"
 
 import { useAtom, useSetAtom } from "jotai"
-import { atomWithStorage, createJSONStorage } from "jotai/utils"
 import { Fragment, useState } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -18,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { SUPPORTED_PROVIDERS } from "@/lib/ai"
+import { providerAtom } from "@/lib/atoms"
 
 import {
     Select,
@@ -28,9 +28,6 @@ import {
 } from "./ui/select"
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-
-const storage = createJSONStorage(() => sessionStorage)
-const providerAtom = atomWithStorage("provider", {}, storage)
 
 export default function AIProviderSettings() {
     const [provider, setProvider] = useState<string>()
@@ -123,7 +120,7 @@ export default function AIProviderSettings() {
                                         }
                                         placeholder={`Enter your ${configKey}`}
                                         onChange={(e) =>
-                                            setConfig((prevConfig) => ({
+                                            setConfig((prevConfig: any) => ({
                                                 ...prevConfig,
                                                 [configKey]: e.target.value,
                                             }))
