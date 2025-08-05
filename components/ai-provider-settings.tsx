@@ -1,6 +1,7 @@
 "use client"
 
 import { useAtom, useSetAtom } from "jotai"
+import { Loader } from "lucide-react"
 import { Fragment, useState } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -19,6 +20,7 @@ import { Label } from "@/components/ui/label"
 import { SUPPORTED_PROVIDERS } from "@/lib/ai"
 import { providerAtom } from "@/lib/atoms"
 
+import { Badge } from "./ui/badge"
 import {
     Select,
     SelectContent,
@@ -30,24 +32,53 @@ import {
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
 export default function AIProviderSettings() {
-    const [provider, setProvider] = useState<string>()
-    const [model, setModel] = useState<string>()
-    const [config, setConfig] = useState<any>()
-
     const [providerAtomValue] = useAtom<any>(providerAtom)
     const providerAtomSetValue = useSetAtom(providerAtom)
 
+    function handleSetProvider(provider: keyof typeof SUPPORTED_PROVIDERS) {
+        providerAtomSetValue((prev: any) => ({
+            ...prev,
+            provider,
+        }))
+    }
+
+    function handleSetModel(model: string) {
+        providerAtomSetValue((prev: any) => ({
+            ...prev,
+            model,
+        }))
+    }
+
+    function handleSetConfig(config: any) {
+        providerAtomSetValue((prev: any) => ({
+            ...prev,
+            config,
+        }))
+    }
+
     function handleSave() {
-        providerAtomSetValue({ provider, model, config })
+        providerAtomSetValue((prev: any) => ({
+            ...prev,
+            provider: prev.provider,
+            model: prev.model,
+            config: prev.config,
+        }))
     }
 
     return (
         <Dialog>
             <DialogTrigger asChild>
                 <Button variant="outline">
-                    {providerAtomValue.provider && providerAtomValue.model
-                        ? `${providerAtomValue.provider} > ${providerAtomValue.model}`
-                        : "Configure Provider"}
+                    {providerAtomValue?.provider && providerAtomValue?.model ? (
+                        <>
+                            <span>{providerAtomValue?.provider}</span>
+                            <Badge variant="secondary">
+                                {providerAtomValue?.model}
+                            </Badge>
+                        </>
+                    ) : (
+                        "Configure Provider"
+                    )}
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
@@ -61,7 +92,10 @@ export default function AIProviderSettings() {
                 <div className="grid gap-4">
                     <div className="grid gap-3">
                         <Label htmlFor="provider">Provider</Label>
-                        <Select onValueChange={(e) => setProvider(e)}>
+                        <Select
+                            onValueChange={handleSetProvider}
+                            defaultValue={providerAtomValue?.provider}
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select a provider" />
                             </SelectTrigger>
@@ -79,17 +113,20 @@ export default function AIProviderSettings() {
                             </SelectContent>
                         </Select>
                     </div>
-                    {provider && (
+                    {providerAtomValue?.provider && (
                         <div className="grid gap-3">
                             <Label htmlFor="model">Models</Label>
-                            <Select onValueChange={(e) => setModel(e)}>
+                            <Select
+                                onValueChange={handleSetModel}
+                                defaultValue={providerAtomValue?.model}
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select a model" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {SUPPORTED_PROVIDERS[
-                                        provider as keyof typeof SUPPORTED_PROVIDERS
-                                    ].models.map((model) => (
+                                    {(SUPPORTED_PROVIDERS as any)[
+                                        providerAtomValue?.provider
+                                    ].models.map((model: string) => (
                                         <SelectItem key={model} value={model}>
                                             {model}
                                         </SelectItem>
@@ -98,42 +135,48 @@ export default function AIProviderSettings() {
                             </Select>
                         </div>
                     )}
-                    {provider && model && (
-                        <div className="grid gap-3">
-                            {Object.keys(
-                                SUPPORTED_PROVIDERS[
-                                    provider as keyof typeof SUPPORTED_PROVIDERS
-                                ].config,
-                            ).map((configKey) => (
-                                <Fragment key={configKey}>
-                                    <Label htmlFor={configKey}>
-                                        {configKey}
-                                    </Label>
-                                    <Input
-                                        id={configKey}
-                                        defaultValue={
-                                            (SUPPORTED_PROVIDERS as any)[
-                                                provider
-                                            ].config[configKey]
-                                        }
-                                        placeholder={`Enter your ${configKey}`}
-                                        onChange={(e) =>
-                                            setConfig((prevConfig: any) => ({
-                                                ...prevConfig,
-                                                [configKey]: e.target.value,
-                                            }))
-                                        }
-                                    />
-                                </Fragment>
-                            ))}
-                        </div>
-                    )}
+                    {providerAtomValue?.provider &&
+                        providerAtomValue?.model && (
+                            <div className="grid gap-3">
+                                {Object.keys(
+                                    (SUPPORTED_PROVIDERS as any)[
+                                        providerAtomValue.provider
+                                    ].config,
+                                ).map((configKey) => (
+                                    <Fragment key={configKey}>
+                                        <Label htmlFor={configKey}>
+                                            {configKey}
+                                        </Label>
+                                        <Input
+                                            id={configKey}
+                                            defaultValue={
+                                                (SUPPORTED_PROVIDERS as any)[
+                                                    providerAtomValue.provider
+                                                ].config[configKey]
+                                            }
+                                            placeholder={`Enter your ${configKey}`}
+                                            onChange={(e) =>
+                                                handleSetConfig(
+                                                    (prevConfig: any) => ({
+                                                        ...prevConfig,
+                                                        [configKey]:
+                                                            e.target.value,
+                                                    }),
+                                                )
+                                            }
+                                        />
+                                    </Fragment>
+                                ))}
+                            </div>
+                        )}
                 </div>
                 <DialogFooter>
                     <DialogClose asChild>
                         <Button variant="outline">Cancel</Button>
                     </DialogClose>
-                    <Button onClick={handleSave}>Save changes</Button>
+                    <DialogClose asChild>
+                        <Button onClick={handleSave}>Save changes</Button>
+                    </DialogClose>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
