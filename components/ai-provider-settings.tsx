@@ -1,8 +1,7 @@
 "use client"
 
 import { useAtom, useSetAtom } from "jotai"
-import { Loader } from "lucide-react"
-import { Fragment, useState } from "react"
+import { Fragment } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
