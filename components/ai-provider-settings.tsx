@@ -34,21 +34,19 @@ export default function AIProviderSettings() {
     const [model, setModel] = useState<string>()
     const [config, setConfig] = useState<any>()
 
-    const [providerAtomValue] = useAtom(providerAtom)
+    const [providerAtomValue] = useAtom<any>(providerAtom)
     const providerAtomSetValue = useSetAtom(providerAtom)
 
     function handleSave() {
         providerAtomSetValue({ provider, model, config })
     }
 
-    console.log(providerAtomValue)
-
     return (
         <Dialog>
             <DialogTrigger asChild>
                 <Button variant="outline">
-                    {provider && model
-                        ? `${provider} > ${model}`
+                    {providerAtomValue.provider && providerAtomValue.model
+                        ? `${providerAtomValue.provider} > ${providerAtomValue.model}`
                         : "Configure Provider"}
                 </Button>
             </DialogTrigger>
