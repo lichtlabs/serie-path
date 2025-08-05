@@ -27,13 +27,15 @@ import {
     SelectValue,
 } from "./ui/select"
 
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+
 const storage = createJSONStorage(() => sessionStorage)
 const providerAtom = atomWithStorage("provider", {}, storage)
 
 export default function AIProviderSettings() {
     const [provider, setProvider] = useState<string>()
     const [model, setModel] = useState<string>()
-    const [config, setConfig] = useState<{}>({})
+    const [config, setConfig] = useState<any>()
 
     const [providerAtomValue] = useAtom(providerAtom)
     const providerAtomSetValue = useSetAtom(providerAtom)
