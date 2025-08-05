@@ -57,11 +57,18 @@ export default function AIProviderSettings() {
     }
 
     function handleSave() {
+        const defaultConfig = (SUPPORTED_PROVIDERS as any)[
+            providerAtomValue?.provider ?? "Ollama"
+        ].config
+
         providerAtomSetValue((prev: any) => ({
             ...prev,
-            provider: prev.provider,
-            model: prev.model,
-            config: prev.config,
+            provider: prev?.provider,
+            model: prev?.model,
+            config: {
+                ...defaultConfig,
+                ...prev?.config,
+            },
         }))
     }
 
